@@ -1,23 +1,20 @@
 package com.derelictech.slangman;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 /**
  * Created by Tim on 1/29/2016.
  */
-public class Letter extends Actor {
+public class Letter {
     private Vector2 pos;
-    private String val;
+    public String val;
     private Color color;
+    private boolean used;
 
     public Rectangle clickBox;
 
@@ -33,12 +30,23 @@ public class Letter extends Actor {
         this.clickBox.setPosition(clickBox.x - 5, clickBox.y - 17);
     }
 
-    public void draw(SpriteBatch batch, BitmapFont font, ShapeRenderer sr) {
+    public void setColor(Color c) {
+        this.color.set(c);
+    }
+
+    public void draw(SpriteBatch batch, ShapeRenderer sr, BitmapFont font) {
         font.setColor(this.color);
         font.draw(batch, this.val, this.pos.x, this.pos.y);
 
         sr.set(ShapeRenderer.ShapeType.Line);
         sr.setColor(this.color);
         sr.rect(clickBox.x, clickBox.y, clickBox.width, clickBox.height);
+    }
+
+    public void setUsed(boolean b) {
+        this.used = b;
+    }
+    public boolean isUsed() {
+        return used;
     }
 }
