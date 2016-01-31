@@ -15,6 +15,7 @@ public class Letter {
     public String val;
     private Color color;
     private boolean used;
+    private boolean show;
 
     public Rectangle clickBox;
 
@@ -36,7 +37,12 @@ public class Letter {
 
     public void draw(SpriteBatch batch, ShapeRenderer sr, BitmapFont font) {
         font.setColor(this.color);
-        font.draw(batch, this.val, this.pos.x, this.pos.y);
+        if(show) {
+            font.draw(batch, this.val, this.pos.x, this.pos.y);
+        }
+        else {
+            font.draw(batch, "_", this.pos.x, this.pos.y);
+        }
 
         sr.set(ShapeRenderer.ShapeType.Line);
         sr.setColor(this.color);
@@ -48,5 +54,8 @@ public class Letter {
     }
     public boolean isUsed() {
         return used;
+    }
+    public void show(boolean b) {
+        this.show = b;
     }
 }

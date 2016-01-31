@@ -38,6 +38,7 @@ public class Alphabet {
         for(int i = 0; i < NUM_LETTERS; i++) {
             float x = this.pos.x + (i * (this.w / NUM_LETTERS));
             letters[i] = new Letter(x, this.pos.y, c.toString(), Color.GREEN);
+            letters[i].show(true);
             c++;
         }
     }
