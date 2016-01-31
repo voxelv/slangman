@@ -25,13 +25,14 @@ public class Slangman extends ApplicationAdapter {
     MysteryWord mword;
 
     HangmanGraphic hmgraphic;
-    private int score = 0;
+    private int wordScore = 0;
 
     Button playAgainButton;
     Button quitButton;
 
     boolean win = false;
     boolean loose = false;
+    private int gameScore = 0;
 
     Vector2 hmanPos;
     Gallows gallows;
@@ -59,7 +60,6 @@ public class Slangman extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 screenY = Gdx.graphics.getHeight() - screenY;
-                System.out.println("CLICKED: " + screenX + ", " + screenY);
 
                 if (!(win || loose)) {
 
@@ -70,7 +70,6 @@ public class Slangman extends ApplicationAdapter {
 
                     if (letter != null) {
                         //TODO: Process new clicked letter
-                        System.out.println("Got: " + letter.val);
 
                         boolean letterInWord = false;
                         boolean wordComplete = true;
@@ -86,34 +85,29 @@ public class Slangman extends ApplicationAdapter {
                         } // End for letters in mword
 
                         if (!letterInWord) {
-                            score++;
-                            if (score >= 6) {
+                            wordScore++;
+                            if (wordScore >= 6) {
                                 loose = true;
                             }
                         }
 
                         if (wordComplete) {
-                            //TODO: Win!
-                            System.out.println("YOU WON!");
+                            gameScore++;
 
                             win = true;
                         }
                     } else {
-                        System.out.println("Clicked letter was already used.");
                     }
                 }
                 else {
-                    System.out.println("Click on Win or Loose Screen");
                     if(playAgainButton.contains(screenX, screenY)) {
-                        System.out.println("Clicked Play Again");
                         win = false;
                         loose = false;
                         alphabet.reset();
                         mword.setSlangWord(new SlangWord(slanglist.get(random.nextInt(slanglist.size()))));
-                        score = 0;
+                        wordScore = 0;
                     }
                     else if(quitButton.contains(screenX, screenY)) {
-                        System.out.println("Clicked Play Again");
                         dispose();
                         win = false;
                         loose = false;
@@ -138,9 +132,12 @@ public class Slangman extends ApplicationAdapter {
         batch.begin();
         mword.draw(batch, sr);
         gallows.draw(batch, sr);
-        hmgraphic.draw(batch, sr, this.score);
+        hmgraphic.draw(batch, sr, this.wordScore);
+        font.draw(batch, "Your Score: " + gameScore, Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 12);
         if(!(win || loose)) {
             // Render
+            font.draw(batch, "Welcome to libGDX Slangman!", 10, Gdx.graphics.getHeight() - 12);
+            font.draw(batch, "Guess a letter by clicking its box in the alphabet!", 10, Gdx.graphics.getHeight() - 32);
             alphabet.draw(batch, sr);
         }
         else if(win) {

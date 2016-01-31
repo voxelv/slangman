@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
  */
 public class Alphabet {
     public static final int NUM_LETTERS = 26;
-    private Vector2 pos;
+    public Vector2 pos;
     private int w;
     private Letter[] letters;
     public Rectangle clickBox;
@@ -58,7 +58,6 @@ public class Alphabet {
         for(Letter l : letters) {
             if(l.clickBox.contains(x, y) && !l.isUsed()) {
                 l.setUsed(true);
-                System.out.println(l.val + " WAS CLICKED");
                 return l;
             }
             else if(l.clickBox.contains(x, y) && l.isUsed()) {
