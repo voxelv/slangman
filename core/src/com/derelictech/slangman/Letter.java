@@ -14,7 +14,7 @@ public class Letter {
     private Vector2 pos;
     public String val;
     private Color color;
-    private boolean used;
+    private boolean used = false;
     private boolean show;
 
     public Rectangle clickBox;
@@ -27,7 +27,7 @@ public class Letter {
         this.pos = new Vector2(position);
         this.val = letter;
         this.color = new Color(color);
-        this.clickBox = new Rectangle(this.pos.x, this.pos.y, 20, 20);
+        this.clickBox = new Rectangle(this.pos.x, this.pos.y, 20, 25);
         this.clickBox.setPosition(clickBox.x - 5, clickBox.y - 17);
     }
 
@@ -49,8 +49,18 @@ public class Letter {
         sr.rect(clickBox.x, clickBox.y, clickBox.width, clickBox.height);
     }
 
+    public void reset() {
+        this.setUsed(false);
+    }
+
     public void setUsed(boolean b) {
         this.used = b;
+        if(b) {
+            color.set(Color.RED);
+        }
+        else {
+            color.set(Color.GREEN);
+        }
     }
     public boolean isUsed() {
         return used;

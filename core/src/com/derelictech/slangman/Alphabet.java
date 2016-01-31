@@ -31,7 +31,7 @@ public class Alphabet {
         this.font = new BitmapFont();
         this.font.setColor(0, 1, 0, 1);
 
-        this.clickBox = new Rectangle(this.pos.x - 6, this.pos.y - 18, this.w - 3, this.font.getLineHeight() + 4);
+        this.clickBox = new Rectangle(this.pos.x - 6, this.pos.y - 18, this.w - 3, this.font.getLineHeight() + 9);
 
         // Initialize Letters
         Character c = 'a';
@@ -57,7 +57,6 @@ public class Alphabet {
     public Letter clicked(float x, float y) {
         for(Letter l : letters) {
             if(l.clickBox.contains(x, y) && !l.isUsed()) {
-                l.setColor(Color.RED);
                 l.setUsed(true);
                 System.out.println(l.val + " WAS CLICKED");
                 return l;
@@ -69,5 +68,11 @@ public class Alphabet {
 
         // Letter clicked is already used
         return null;
+    }
+
+    public void reset() {
+        for(Letter l : letters) {
+            l.reset();
+        }
     }
 }

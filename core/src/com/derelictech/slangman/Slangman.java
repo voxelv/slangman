@@ -5,8 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.Random;
 
@@ -16,68 +18,107 @@ public class Slangman extends ApplicationAdapter {
 
     SpriteBatch batch;
 	ShapeRenderer sr;
-    Alphabet alphabet;
+    BitmapFont font;
 
+    Alphabet alphabet;
     SlangWordList slanglist;
     MysteryWord mword;
 
     HangmanGraphic hmgraphic;
-    private int score;
+    private int score = 0;
 
+    Button playAgainButton;
+    Button quitButton;
+
+    boolean win = false;
+    boolean loose = false;
+
+    Vector2 hmanPos;
+    Gallows gallows;
 
     @Override
 	public void create () {
         random = new Random(0x01234567L);
         batch = new SpriteBatch();
 		sr = new ShapeRenderer();
+        font = new BitmapFont();
+        font.setColor(Color.WHITE);
+
         alphabet = new Alphabet(10, 30, 600);
-
         slanglist = new SlangWordList();
-        mword = new MysteryWord(10, 70, slanglist.get(random.nextInt(slanglist.size())));
+        mword = new MysteryWord(120, 100, slanglist.get(random.nextInt(slanglist.size())));
 
-        hmgraphic = new HangmanGraphic(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 10, Color.RED);
+        hmanPos = new Vector2(Gdx.graphics.getWidth() / 2, 350);
+        hmgraphic = new HangmanGraphic(hmanPos.x, hmanPos.y, Color.RED);
+        gallows = new Gallows(hmanPos, Color.BROWN);
+
+        playAgainButton = new Button(400, 10, "Play Again", Color.GREEN);
+        quitButton = new Button(530, 10, "Quit", Color.RED);
 
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 screenY = Gdx.graphics.getHeight() - screenY;
+                System.out.println("CLICKED: " + screenX + ", " + screenY);
 
-                Letter letter = null;
-                System.out.println("CLICKED: " + screenX +", "+ screenY);
-                if(alphabet.clickBox.contains(screenX, screenY))
-                {
-                    letter = alphabet.clicked(screenX, screenY);
-                }
+                if (!(win || loose)) {
 
-                if(letter != null)
-                {
-                    //TODO: Process new clicked letter
-                    System.out.println("Got: " + letter.val);
-
-                    boolean letterInWord = false;
-                    boolean wordComplete = true;
-                    for(Letter l : mword) {
-                        if(l.val.charAt(0) == letter.val.charAt(0)) {
-                            l.show(true);
-                            letterInWord = true;
-                        }
-
-                        if(!l.isShown()) {
-                            wordComplete = false;
-                        }
-                    } // End for letters in mword
-
-                    if (!letterInWord) {
-                        score++;
+                    Letter letter = null;
+                    if (alphabet.clickBox.contains(screenX, screenY)) {
+                        letter = alphabet.clicked(screenX, screenY);
                     }
 
-                    if(wordComplete) {
-                        //TODO: Win!
-                        System.out.println("YOU WON!");
+                    if (letter != null) {
+                        //TODO: Process new clicked letter
+                        System.out.println("Got: " + letter.val);
+
+                        boolean letterInWord = false;
+                        boolean wordComplete = true;
+                        for (Letter l : mword) {
+                            if (l.val.charAt(0) == letter.val.charAt(0)) {
+                                l.show(true);
+                                letterInWord = true;
+                            }
+
+                            if (!l.isShown()) {
+                                wordComplete = false;
+                            }
+                        } // End for letters in mword
+
+                        if (!letterInWord) {
+                            score++;
+                            if (score >= 6) {
+                                loose = true;
+                            }
+                        }
+
+                        if (wordComplete) {
+                            //TODO: Win!
+                            System.out.println("YOU WON!");
+
+                            win = true;
+                        }
+                    } else {
+                        System.out.println("Clicked letter was already used.");
                     }
                 }
                 else {
-                    System.out.println("Clicked letter was already used.");
+                    System.out.println("Click on Win or Loose Screen");
+                    if(playAgainButton.contains(screenX, screenY)) {
+                        System.out.println("Clicked Play Again");
+                        win = false;
+                        loose = false;
+                        alphabet.reset();
+                        mword.setSlangWord(new SlangWord(slanglist.get(random.nextInt(slanglist.size()))));
+                        score = 0;
+                    }
+                    else if(quitButton.contains(screenX, screenY)) {
+                        System.out.println("Clicked Play Again");
+                        dispose();
+                        win = false;
+                        loose = false;
+                        System.exit(0);
+                    }
                 }
 
                 return true;
@@ -93,15 +134,32 @@ public class Slangman extends ApplicationAdapter {
         // Game Logic
 
 
-
-        // Render
         sr.begin(ShapeRenderer.ShapeType.Line);
-		batch.begin();
-		//TODO: ADD RENDER STEPS
+        batch.begin();
         mword.draw(batch, sr);
-        alphabet.draw(batch, sr);
+        gallows.draw(batch, sr);
         hmgraphic.draw(batch, sr, this.score);
-		batch.end();
+        if(!(win || loose)) {
+            // Render
+            alphabet.draw(batch, sr);
+        }
+        else if(win) {
+            // Render
+            font.draw(batch, "YOU WON!", 300, 30);
+            font.draw(batch, "The slang was: \"" + mword.slangWord.slang + "\"", 20, Gdx.graphics.getHeight() - 20);
+            font.draw(batch, "Its definition is: \"" + mword.slangWord.def + "\"", 20, Gdx.graphics.getHeight() - 40);
+            playAgainButton.draw(batch, sr);
+            quitButton.draw(batch, sr);
+        }
+        else {
+            // Render
+            font.draw(batch, "YOU LOST!", 300, 30);
+            font.draw(batch, "The slang was: \"" + mword.slangWord.slang + "\"", 20, Gdx.graphics.getHeight() - 20);
+            font.draw(batch, "Its definition is: \"" + mword.slangWord.def + "\"", 20, Gdx.graphics.getHeight() - 40);
+            playAgainButton.draw(batch, sr);
+            quitButton.draw(batch, sr);
+        }
+        batch.end();
         sr.end();
 	}
 
@@ -109,6 +167,7 @@ public class Slangman extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         sr.dispose();
+        font.dispose();
         super.dispose();
     }
 }
