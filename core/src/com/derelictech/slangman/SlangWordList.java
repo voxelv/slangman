@@ -8,13 +8,10 @@ import java.util.ArrayList;
 public class SlangWordList extends ArrayList<SlangWord> {
     public SlangWordList() {
         this.add("brb",      "Be Right Back");
-        this.add("bbiab",    "Be Back In A Bit");
         this.add("bbl",      "Be Back Later");
         this.add("ttfn",     "Ta Ta For Now");
-        this.add("bbs",      "Be Back Soon");
         this.add("btw",      "By The Way");
         this.add("kiss",     "Keep It Simple Stupid");
-        this.add("kit",      "Keep In Touch");
         this.add("gg",       "Good Game");
         this.add("pm",       "Private Message");
         this.add("ttyl",     "Talk To You Later");
