@@ -58,4 +58,7 @@ public class Letter {
     public void show(boolean b) {
         this.show = b;
     }
+    public boolean isShown() {
+        return show;
+    }
 }

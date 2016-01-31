@@ -1,8 +1,8 @@
 package com.derelictech.slangman;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,12 +10,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.util.Random;
 
-public class Slangman extends ApplicationAdapter {
+/**
+ * Created by Tim on 1/30/2016.
+ */
+public class SlangmanScreen extends ScreenAdapter {
+
 
     Random random;
 
     SpriteBatch batch;
-	ShapeRenderer sr;
+    ShapeRenderer sr;
     Alphabet alphabet;
 
     SlangWordList slanglist;
@@ -26,10 +30,10 @@ public class Slangman extends ApplicationAdapter {
 
 
     @Override
-	public void create () {
+    public void show () {
         random = new Random(0x01234567L);
         batch = new SpriteBatch();
-		sr = new ShapeRenderer();
+        sr = new ShapeRenderer();
         alphabet = new Alphabet(10, 30, 600);
 
         slanglist = new SlangWordList();
@@ -83,12 +87,12 @@ public class Slangman extends ApplicationAdapter {
                 return true;
             }
         });
-	}
+    }
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    @Override
+    public void render (float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Game Logic
 
@@ -96,14 +100,14 @@ public class Slangman extends ApplicationAdapter {
 
         // Render
         sr.begin(ShapeRenderer.ShapeType.Line);
-		batch.begin();
-		//TODO: ADD RENDER STEPS
+        batch.begin();
+        //TODO: ADD RENDER STEPS
         mword.draw(batch, sr);
         alphabet.draw(batch, sr);
         hmgraphic.draw(batch, sr, this.score);
-		batch.end();
+        batch.end();
         sr.end();
-	}
+    }
 
     @Override
     public void dispose() {
