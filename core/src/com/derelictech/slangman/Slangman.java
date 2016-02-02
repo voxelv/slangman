@@ -39,7 +39,7 @@ public class Slangman extends ApplicationAdapter {
 
     @Override
 	public void create () {
-        random = new Random(0x01234567L);
+        random = new Random(System.currentTimeMillis());
         batch = new SpriteBatch();
 		sr = new ShapeRenderer();
         font = new BitmapFont();
