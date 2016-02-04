@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -37,6 +38,9 @@ public class Slangman extends ApplicationAdapter {
     Vector2 hmanPos;
     Gallows gallows;
 
+    Texture bunnies;
+    Texture cemetary;
+
     @Override
 	public void create () {
         random = new Random(0x01234567L);
@@ -56,6 +60,9 @@ public class Slangman extends ApplicationAdapter {
         playAgainButton = new Button(400, 10, "Play Again", Color.GREEN);
         quitButton = new Button(530, 10, "Quit", Color.RED);
 
+        bunnies = new Texture(Gdx.files.internal("bunnies.jpg"));
+        cemetary = new Texture(Gdx.files.internal("cemetary.jpg"));
+
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -69,7 +76,6 @@ public class Slangman extends ApplicationAdapter {
                     }
 
                     if (letter != null) {
-                        //TODO: Process new clicked letter
 
                         boolean letterInWord = false;
                         boolean wordComplete = true;
@@ -96,8 +102,8 @@ public class Slangman extends ApplicationAdapter {
 
                             win = true;
                         }
-                    } else {
                     }
+
                 }
                 else {
                     if(playAgainButton.contains(screenX, screenY)) {
@@ -115,33 +121,33 @@ public class Slangman extends ApplicationAdapter {
                     }
                 }
 
-                return true;
-            }
-        });
-	}
+        return true;
+    }
+});
+        }
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+@Override
+public void render () {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Game Logic
 
 
         sr.begin(ShapeRenderer.ShapeType.Line);
         batch.begin();
+        if(!(win || loose)) {
+        // Render
+        font.draw(batch, "Welcome to libGDX Slangman!", 10, Gdx.graphics.getHeight() - 12);
+        font.draw(batch, "Guess a letter by clicking its box in the alphabet!", 10, Gdx.graphics.getHeight() - 32);
         mword.draw(batch, sr);
         gallows.draw(batch, sr);
         hmgraphic.draw(batch, sr, this.wordScore);
-        font.draw(batch, "Your Score: " + gameScore, Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 12);
-        if(!(win || loose)) {
-            // Render
-            font.draw(batch, "Welcome to libGDX Slangman!", 10, Gdx.graphics.getHeight() - 12);
-            font.draw(batch, "Guess a letter by clicking its box in the alphabet!", 10, Gdx.graphics.getHeight() - 32);
-            alphabet.draw(batch, sr);
+        alphabet.draw(batch, sr);
         }
         else if(win) {
             // Render
+            batch.draw(bunnies, -100, 0);
             font.draw(batch, "YOU WON!", 300, 30);
             font.draw(batch, "The slang was: \"" + mword.slangWord.slang + "\"", 20, Gdx.graphics.getHeight() - 20);
             font.draw(batch, "Its definition is: \"" + mword.slangWord.def + "\"", 20, Gdx.graphics.getHeight() - 40);
@@ -150,18 +156,25 @@ public class Slangman extends ApplicationAdapter {
         }
         else {
             // Render
+            batch.draw(cemetary, -250, -100);
             font.draw(batch, "YOU LOST!", 300, 30);
             font.draw(batch, "The slang was: \"" + mword.slangWord.slang + "\"", 20, Gdx.graphics.getHeight() - 20);
             font.draw(batch, "Its definition is: \"" + mword.slangWord.def + "\"", 20, Gdx.graphics.getHeight() - 40);
+            mword.draw(batch, sr);
+            gallows.draw(batch, sr);
+            hmgraphic.draw(batch, sr, this.wordScore);
             playAgainButton.draw(batch, sr);
             quitButton.draw(batch, sr);
         }
+        font.draw(batch, "Your Score: " + gameScore, Gdx.graphics.getWidth() - 150, Gdx.graphics.getHeight() - 12);
         batch.end();
         sr.end();
 	}
 
     @Override
     public void dispose() {
+        bunnies.dispose();
+        cemetary.dispose();
         batch.dispose();
         sr.dispose();
         font.dispose();
